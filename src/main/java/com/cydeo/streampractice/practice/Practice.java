@@ -4,10 +4,7 @@ import com.cydeo.streampractice.model.*;
 import com.cydeo.streampractice.service.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -135,48 +132,117 @@ public class Practice {
     // 13. Display the region of the IT department
     public static Region getRegionOfITDepartment() throws Exception {
         //TODO Implement the method
-        return new Region();
+        return departmentService.readAll().stream()
+                .filter(department -> department.getDepartmentName().equals("IT"))
+//                .findFirst().get().getLocation().getCountry().getRegion();
+                .findFirst().orElseThrow().getLocation().getCountry().getRegion();
+
+//      return departmentService.readAll().stream()
+//                .filter(department -> department.getDepartmentName().equals("asddad"))
+//                .findFirst().orElseThrow(()-> new Exception("No department found"))
+//                .getLocation().getCountry().getRegion();
     }
 
     // 14. Display all the departments where the region of department is 'Europe'
     public static List<Department> getAllDepartmentsWhereRegionOfCountryIsEurope() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return departmentService.readAll().stream()
+                .filter(department -> department.getLocation().getCountry().getRegion().getRegionName().equals("Europe"))
+                .collect(Collectors.toList());
     }
 
     // 15. Display if there is any employee with salary less than 1000. If there is none, the method should return true
     public static boolean checkIfThereIsNoSalaryLessThan1000() {
         //TODO Implement the method
-        return false;
+//        return employeeService.readAll().stream()
+//                .allMatch(employee -> employee.getSalary()>1000);
+
+        return employeeService.readAll().stream()
+                .noneMatch(employee -> employee.getSalary() < 1000);
+
+//        return !employeeService.readAll().stream()
+//                .anyMatch(employee -> employee.getSalary()<1000);
+
+
     }
 
     // 16. Check if the salaries of all the employees in IT department are greater than 2000 (departmentName: IT)
     public static boolean checkIfThereIsAnySalaryGreaterThan2000InITDepartment() {
         //TODO Implement the method
-        return false;
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getDepartment().getDepartmentName().equals("IT"))
+                .allMatch(employee -> employee.getSalary() > 2000);
+
+//                .noneMatch(employee -> employee.getSalary()<2000);
+
+//        return !employeeService.readAll().stream()
+//                .anyMatch(employee -> employee.getSalary()<2000);
     }
 
     // 17. Display all the employees whose salary is less than 5000
     public static List<Employee> getAllEmployeesWithLessSalaryThan5000() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getSalary() < 5000) //We are not using any none or all match, because it is not saying "check if .." it is saying "display"
+                .collect(Collectors.toList());
     }
 
     // 18. Display all the employees whose salary is between 6000 and 7000
     public static List<Employee> getAllEmployeesSalaryBetween() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getSalary() > 6000 && employee.getSalary() < 7000)
+                .collect(Collectors.toList()); // for displaying List
+
     }
 
     // 19. Display the salary of the employee Grant Douglas (lastName: Grant, firstName: Douglas)
     public static Long getGrantDouglasSalary() throws Exception {
         //TODO Implement the method
-        return 1L;
+        return employeeService.readAll().stream()
+                .filter(employee -> employee.getFirstName().equals("Douglas"))
+                .filter(employee -> employee.getLastName().equals("Grant"))
+                .findFirst().orElseThrow(() -> new Exception("Douglas Grant")).getSalary();
     }
 
     // 20. Display the maximum salary an employee gets
     public static Long getMaxSalary() throws Exception {
-        return 1L;
+        //TODO Implement the method
+        return employeeService.readAll().stream()
+                .map(Employee::getSalary)
+                .reduce(Long::max)
+                .get();
+
+//        return employeeService.readAll().stream()
+//                .mapToLong(Employee::getSalary)
+//                .max().getAsLong();
+
+//        return employeeService.readAll().stream()
+//                .collect(Collectors.maxBy(Comparator.comparing(Employee::getSalary)))
+//                .get().getSalary();
+
+//        return employeeService.readAll().stream()
+//                .map(Employee::getSalary)  // .map(employee -> employee.getSalary())
+//                .collect(Collectors.maxBy(Comparator.comparing(Long::longValue)))
+//                .get();
+
+//        return employeeService.readAll().stream()
+//                .map(Employee::getSalary)  // .map(employee -> employee.getSalary())
+//                .reduce((salary1,salary2)-> salary1 > salary2 ? salary1 : salary2)
+//                .get();
+
+//        return employeeService.readAll().stream()
+//                .max(Comparator.comparing(Employee::getSalary))
+//                .get().getSalary();
+
+//        return employeeService.readAll().stream()
+//                .sorted(Comparator.comparing(Employee::getSalary).reversed())
+//                .findFirst().get().getSalary();
+
+//        return employeeService.readAll().stream()
+//                .sorted(Comparator.comparing(Employee::getSalary).reversed())
+//                .limit(1).collect(Collectors.toList()).get(0).getSalary();
+
     }
 
     // 21. Display the employee(s) who gets the maximum salary
