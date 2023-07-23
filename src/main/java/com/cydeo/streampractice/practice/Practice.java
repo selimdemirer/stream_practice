@@ -135,8 +135,7 @@ public class Practice {
     // 13. Display the region of the IT department
     public static Region getRegionOfITDepartment() throws Exception {
         //TODO Implement the method
-        return regionService.readAll().stream()
-                .filter(region -> region.)
+        return new Region();
     }
 
     // 14. Display all the departments where the region of department is 'Europe'
